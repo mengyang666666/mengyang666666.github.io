@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>三角洲项目介绍</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <style>
+    :root {
+      --bg: #405349;
+      --panel: rgba(67, 86, 76, .7);
+      --panel-strong: rgba(70, 91, 80, .88);
+      --line: rgba(218, 232, 220, .2);
+      --text: #f5f7f4;
+      --muted: #aeb8b1;
+      --green: #8df0be;
+      --cyan: #7dd3fc;
+      --amber: #f6d365;
+      --red: #fb7185;
+      --hero: url("https://game.gtimg.cn/images/dfm/cp/a20240906main/p3-main1.jpg");
+    }
+    html { scroll-behavior: smooth; }
+    body { --mx: 50%; --my: 42%; margin: 0; min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+    body::before { content: ""; position: fixed; inset: -4vh -4vw; z-index: -8; background-image: var(--hero); background-position: center top; background-size: cover; transform: scale(1.08) translate3d(calc((50% - var(--mx)) * .018), calc((50% - var(--my)) * .012), 0); filter: saturate(1.02) contrast(.98) brightness(.92); animation: sceneMove 30s ease-in-out infinite alternate; will-change: transform; }
+    body::after { content: ""; position: fixed; inset: 0; z-index: -7; background: radial-gradient(circle at var(--mx) var(--my), rgba(141,240,190,.2), transparent 22rem), linear-gradient(115deg, rgba(47,65,58,.9), rgba(64,83,73,.48) 42%, rgba(49,67,62,.86)), linear-gradient(180deg, rgba(239,244,235,.15), #4b6256 68%, #405349); }
+    .ambient-field { position: fixed; inset: 0; z-index: -6; pointer-events: none; overflow: hidden; background: linear-gradient(120deg, transparent 0 18%, rgba(125,211,252,.12) 26%, transparent 34% 58%, rgba(246,211,101,.1) 68%, transparent 78%), linear-gradient(250deg, rgba(141,240,190,.18), transparent 38%, rgba(251,113,133,.08)); mix-blend-mode: screen; opacity: .72; animation: ambientShift 16s ease-in-out infinite alternate; }
+    .ambient-field::before { content: ""; position: absolute; inset: -20% -12%; background: repeating-linear-gradient(112deg, transparent 0 54px, rgba(225,238,228,.09) 55px, transparent 57px, transparent 142px); transform: translate3d(-8%, 0, 0); animation: lightSweep 9s cubic-bezier(.4,0,.2,1) infinite; }
+    .ambient-field::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(245,247,244,.22) 0 1px, transparent 1.6px); background-size: 110px 110px; mask-image: linear-gradient(180deg, rgba(0,0,0,.85), transparent 78%); opacity: .34; animation: particleDrift 22s linear infinite; }
+    .tactical-grid { position: fixed; inset: 0; z-index: -5; pointer-events: none; background-image: linear-gradient(rgba(225, 238, 228, .075) 1px, transparent 1px), linear-gradient(90deg, rgba(225, 238, 228, .075) 1px, transparent 1px), linear-gradient(115deg, transparent 0 47%, rgba(141,240,190,.12) 48%, transparent 49% 100%); background-size: 72px 72px, 72px 72px, 520px 520px; mask-image: linear-gradient(180deg, transparent, black 10%, black 82%, transparent); animation: gridRun 18s linear infinite; }
+    .signal-ribbons { position: fixed; inset: 0; z-index: -4; pointer-events: none; overflow: hidden; mask-image: linear-gradient(180deg, black, transparent 82%); }
+    .signal-ribbons span { position: absolute; left: -18vw; width: 138vw; height: 1px; background: linear-gradient(90deg, transparent, rgba(125,211,252,.72), rgba(141,240,190,.42), transparent); box-shadow: 0 0 24px rgba(125,211,252,.34); transform: rotate(-14deg); opacity: .68; animation: ribbonMove 7.5s linear infinite; }
+    .signal-ribbons span:nth-child(1) { top: 18vh; animation-delay: -1.2s; }
+    .signal-ribbons span:nth-child(2) { top: 42vh; opacity: .42; animation-duration: 10s; animation-delay: -4s; }
+    .signal-ribbons span:nth-child(3) { top: 66vh; opacity: .35; animation-duration: 12s; animation-delay: -7s; }
+    .scanline { position: fixed; inset-inline: 0; top: -30vh; height: 28vh; z-index: -3; pointer-events: none; background: linear-gradient(180deg, transparent, rgba(203, 232, 217, .16), transparent); animation: scan 5.8s linear infinite; }
+    .noise-layer { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: .12; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"); mix-blend-mode: overlay; }
+    .progress { position: fixed; top: 0; left: 0; width: var(--scroll-progress, 0%); height: 3px; z-index: 90; background: linear-gradient(90deg, var(--green), var(--cyan), var(--amber)); box-shadow: 0 0 18px rgba(141,240,190,.75); }
+    .glass { border: 1px solid var(--line); background: var(--panel); backdrop-filter: blur(18px); }
+    .sharp { border-radius: 8px; }
+    .hairline { border-color: rgba(255,255,255,.09); }
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.show { opacity: 1; transform: translateY(0); }
+    .section-title { letter-spacing: 0; }
+    .text-block { white-space: pre-line; }
+    .content-card { border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.045); border-radius: 8px; }
+    .content-card h3, .content-card p { overflow-wrap: anywhere; }
+    .image-frame { border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.24); border-radius: 8px; overflow: hidden; }
+    .price-board { border: 1px solid rgba(246,211,101,.28); background: linear-gradient(135deg, rgba(246,211,101,.14), rgba(255,255,255,.06)); box-shadow: 0 18px 50px rgba(0,0,0,.16); }
+    .price-num { font-size: clamp(2.6rem, 5vw, 4.8rem); line-height: .95; letter-spacing: 0; }
+    .flow-section { position: relative; padding-left: 1.5rem; }
+    .flow-section::before { content: ""; position: absolute; left: 0; top: .35rem; bottom: .35rem; width: 2px; background: linear-gradient(180deg, rgba(141,240,190,.85), rgba(125,211,252,.12)); }
+    .doc-block { margin-bottom: 1.25rem; }
+    .doc-heading { display: flex; align-items: baseline; gap: .75rem; margin-bottom: .75rem; }
+    .doc-heading .tag { display: inline-flex; align-items: center; gap: .35rem; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(141,240,190,.95); }
+    .doc-title { color: #f97316; font-weight: 950; text-shadow: 0 2px 18px rgba(249,115,22,.18); }
+    .doc-text { margin: 0; width: 100%; max-width: none; color: #e7efe8; line-height: 1.95; font-size: 1.03rem; overflow-wrap: anywhere; }
+    .feedback-text-highlight { display: block; width: 100%; color: #dc2626; font-weight: 900; }
+    .feedback-line { display: block; width: fit-content; max-width: 100%; margin: .32rem 0; padding: .18rem .55rem; border-radius: 4px; background: #fff2a8; color: #dc2626; font-weight: 900; line-height: 1.85; box-decoration-break: clone; -webkit-box-decoration-break: clone; overflow-wrap: anywhere; }
+    .hot-term { color: #ef4444; font-weight: 900; }
+    .doc-image { margin: 1.5rem 0; }
+    .doc-image img { width: 100%; display: block; border-radius: 10px; }
+    .feedback-caption { display: inline-block; border-radius: 6px; background: #fde047; color: #dc2626; font-weight: 900; padding: .25rem .55rem; }
+    .feedback-grid { columns: 320px; column-gap: 1.25rem; }
+    .feedback-flow { display: block; }
+    .feedback-item { margin-bottom: 1.5rem; break-inside: avoid; }
+    .contact-dock { position: fixed; right: 18px; bottom: 18px; z-index: 80; width: min(315px, calc(100vw - 28px)); transition: opacity .35s ease, transform .35s ease; }
+    .contact-dock.is-hidden { opacity: 0; transform: translateY(16px) scale(.96); pointer-events: none; }
+    .contact-qr { width: 74px; height: 74px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,.16); }
+    .hero-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); align-items: center; gap: clamp(2rem, 5vw, 5rem); width: 100%; }
+    .hero-copy { text-align: left; }
+    .hero-actions { justify-content: flex-start; }
+    .hero-contact-card { position: relative; display: block; overflow: hidden; border-radius: 8px; border: 1px solid rgba(218,232,220,.22); background: linear-gradient(145deg, rgba(245,247,244,.12), rgba(67,86,76,.52)); box-shadow: 0 30px 90px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.16); backdrop-filter: blur(22px); transform: translateY(8px); transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease; }
+    .hero-contact-card:hover { transform: translateY(0); border-color: rgba(141,240,190,.48); box-shadow: 0 34px 100px rgba(0,0,0,.3), 0 0 42px rgba(141,240,190,.16), inset 0 1px 0 rgba(255,255,255,.18); }
+    .hero-contact-card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 26% 18%, rgba(141,240,190,.25), transparent 34%), linear-gradient(135deg, rgba(125,211,252,.14), transparent 48%); pointer-events: none; }
+    .hero-contact-card::after { content: ""; position: absolute; inset: 10px; border: 1px solid rgba(255,255,255,.08); border-radius: 6px; pointer-events: none; }
+    .hero-contact-inner { position: relative; display: grid; gap: 1rem; padding: 1rem; }
+    .hero-contact-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; color: #eaf7ee; }
+    .hero-contact-title { display: flex; align-items: center; gap: .5rem; font-weight: 800; }
+    .hero-contact-tag { border: 1px solid rgba(141,240,190,.28); border-radius: 999px; padding: .2rem .55rem; color: #bff8d5; font-size: .72rem; background: rgba(141,240,190,.08); }
+    .hero-qr-wrap { display: grid; place-items: center; border-radius: 8px; padding: .8rem; background: rgba(255,255,255,.1); }
+    .hero-qr { width: min(100%, 260px); aspect-ratio: 1 / 1; object-fit: contain; border-radius: 8px; border: 1px solid rgba(255,255,255,.28); background: #fff; box-shadow: 0 18px 50px rgba(0,0,0,.22); }
+    .hero-contact-foot { display: flex; align-items: center; justify-content: space-between; gap: .75rem; color: rgba(245,247,244,.78); font-size: .84rem; }
+    @keyframes sceneMove { from { background-position: 48% 0; } to { background-position: 54% 3%; } }
+    @keyframes ambientShift { from { transform: translate3d(-1.5%, -1%, 0) scale(1.02); opacity: .55; } to { transform: translate3d(1.5%, 1%, 0) scale(1.06); opacity: .82; } }
+    @keyframes lightSweep { from { transform: translate3d(-16%, 0, 0); } to { transform: translate3d(14%, 0, 0); } }
+    @keyframes particleDrift { from { background-position: 0 0; } to { background-position: 220px 330px; } }
+    @keyframes ribbonMove { from { transform: translateX(-18%) rotate(-14deg); } to { transform: translateX(18%) rotate(-14deg); } }
+    @keyframes gridRun { from { background-position: 0 0, 0 0, 0 0; } to { background-position: 72px 144px, 72px 144px, 520px -520px; } }
+    @keyframes scan { from { transform: translateY(0); } to { transform: translateY(135vh); } }
+    @media (prefers-reduced-motion: reduce) { body::before, .ambient-field, .ambient-field::before, .ambient-field::after, .tactical-grid, .signal-ribbons span, .scanline { animation: none !important; } }
+    @media (max-width: 900px) { .hero-layout { grid-template-columns: 1fr; justify-items: center; text-align: center; } .hero-copy { text-align: center; } .hero-actions { justify-content: center; } .hero-contact-card { width: min(330px, 100%); } }
+    @media (max-width: 640px) {
+      body::before { background-position: center top; }
+      header .mx-auto { padding: .7rem 1rem; }
+      header nav { display: none; }
+      header .contact-link { padding: .55rem .7rem; font-size: .78rem; }
+      main > section:first-child { min-height: auto; padding: 4.25rem 1rem 2rem; }
+      main > section:first-child > div { min-height: auto; }
+      .hero-layout { gap: 1.15rem; align-items: start; }
+      .hero-copy > .mb-6 { margin-bottom: 1rem; padding: .5rem .75rem; font-size: .86rem; }
+      .section-title { font-size: clamp(3.25rem, 17vw, 4.35rem); line-height: .98; }
+      .hero-actions { display: grid !important; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.35rem; width: 100%; }
+      .hero-actions a { justify-content: center; min-height: 3.25rem; padding: .75rem .55rem; font-size: .95rem; line-height: 1.25; }
+      .hero-contact-card { width: 100%; max-width: 360px; transform: none; }
+      .hero-contact-inner { grid-template-columns: 116px minmax(0, 1fr); grid-template-areas: "qr head" "qr foot"; align-items: center; gap: .7rem .85rem; padding: .72rem; }
+      .hero-contact-head { grid-area: head; align-items: flex-start; flex-direction: column; gap: .45rem; }
+      .hero-contact-title { font-size: .98rem; }
+      .hero-contact-tag { font-size: .68rem; padding: .16rem .5rem; }
+      .hero-qr-wrap { grid-area: qr; padding: .35rem; }
+      .hero-qr { width: 108px; border-radius: 6px; }
+      .hero-contact-foot { grid-area: foot; font-size: .78rem; line-height: 1.35; }
+      .contact-dock { display: none; }
+      #project, #feedback { padding-left: 1rem; padding-right: 1rem; }
+      .flow-section { padding-left: .85rem; }
+      .doc-block { margin-bottom: 1rem; }
+      .doc-heading { gap: .45rem; margin-bottom: .45rem; }
+      .doc-heading .tag { font-size: .65rem; }
+      .doc-title { font-size: 1.35rem; line-height: 1.35; }
+      .doc-text { font-size: .96rem; line-height: 1.82; }
+      .price-num { font-size: clamp(2.8rem, 18vw, 4.8rem); }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress"></div>
+  <div class="ambient-field"></div>
+  <div class="tactical-grid"></div>
+  <div class="signal-ribbons" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="scanline"></div>
+  <div class="noise-layer"></div>
+
+  <header class="sticky top-0 z-50 border-b border-emerald-100/15 bg-[#50665b]/95 shadow-lg shadow-black/10 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <a href="#top" class="flex items-center gap-3">
+        <span class="grid h-9 w-9 place-items-center sharp border border-emerald-300/30 bg-emerald-300/10"><iconify-icon icon="game-icons:delta" class="text-xl text-emerald-200"></iconify-icon></span>
+        <span class="font-semibold">三角洲项目介绍</span>
+      </a>
+      <nav class="hidden items-center gap-5 text-sm text-emerald-50/75 md:flex">
+        <a href="#project" class="hover:text-emerald-100">项目内容</a>
+        <a href="#feedback" class="hover:text-emerald-100">学员反馈</a>
+      </nav>
+      <a href="https://work.weixin.qq.com/ca/cawcde31bb9ee19d24" target="_blank" rel="noreferrer" title="点击跳转企业微信" aria-label="点击跳转企业微信" class="contact-link inline-flex items-center gap-2 sharp border border-emerald-300/30 bg-emerald-300/10 px-3 py-2 text-sm text-emerald-100 hover:bg-emerald-300/15">
+        <iconify-icon icon="mdi:wechat"></iconify-icon><span>联系咨询</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="relative min-h-[92vh] px-4 pb-12 pt-20 sm:px-6 lg:px-8">
+      <div class="mx-auto flex min-h-[62vh] max-w-7xl items-center">
+        <div class="reveal hero-layout mx-auto">
+          <div class="hero-copy">
+            <div class="mb-6 inline-flex items-center gap-2 sharp border border-emerald-300/25 bg-emerald-300/10 px-4 py-2 text-base text-emerald-100">
+              <iconify-icon icon="solar:radar-2-bold-duotone"></iconify-icon>
+              <span>Delta Force / 三角洲行动</span>
+            </div>
+            <h1 class="section-title text-5xl font-black leading-tight sm:text-7xl lg:text-8xl">三角洲项目介绍</h1>
+            <div class="hero-actions mt-10 flex flex-wrap gap-4">
+              <a href="#project" class="inline-flex items-center gap-2 sharp bg-emerald-300 px-7 py-4 text-lg font-semibold text-zinc-950 hover:bg-emerald-200"><iconify-icon icon="lucide:file-text"></iconify-icon>查看项目内容</a>
+              <a href="#feedback" class="inline-flex items-center gap-2 sharp border border-white/15 bg-white/10 px-7 py-4 text-lg font-semibold text-white hover:bg-white/15"><iconify-icon icon="lucide:images"></iconify-icon>查看反馈图库</a>
+            </div>
+          </div>
+          <a class="hero-contact-card" href="https://work.weixin.qq.com/ca/cawcde31bb9ee19d24" target="_blank" rel="noreferrer" title="点击二维码添加企业微信" aria-label="点击二维码添加企业微信">
+            <span class="hero-contact-inner">
+              <span class="hero-contact-head">
+                <span class="hero-contact-title"><iconify-icon icon="mdi:wechat" class="text-xl text-emerald-200"></iconify-icon>企业微信添加</span>
+                <span class="hero-contact-tag">直连咨询</span>
+              </span>
+              <span class="hero-qr-wrap"><img class="hero-qr" src="contact-wecom-qr.jpg" alt="企业微信二维码" /></span>
+              <span class="hero-contact-foot"><span>扫码或点击二维码</span><iconify-icon icon="lucide:arrow-up-right"></iconify-icon></span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="project" class="px-4 py-16 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-none">
+        <div id="main-content" class="flow-section"></div>
+      </div>
+    </section>
+
+    <section id="feedback" class="border-t border-emerald-900/10 bg-white/20 px-4 py-16 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-none">
+        <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div></div>
+          <div class="flex flex-wrap gap-2">
+            <button id="compact-toggle" class="inline-flex items-center gap-2 sharp border border-white/10 bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/15"><iconify-icon icon="lucide:layout-grid"></iconify-icon>紧凑图库</button>
+            <a href="https://work.weixin.qq.com/ca/cawcde31bb9ee19d24" target="_blank" rel="noreferrer" title="点击跳转企业微信" aria-label="点击跳转企业微信" class="inline-flex items-center gap-2 sharp bg-sky-300 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-sky-200"><iconify-icon icon="lucide:message-circle"></iconify-icon>咨询</a>
+          </div>
+        </div>
+        <div id="feedback-content" class="feedback-flow"></div>
+      </div>
+    </section>
+  </main>
+
+  <aside id="contact" class="contact-dock glass sharp is-hidden p-3 shadow-2xl shadow-black/40">
+    <a class="flex cursor-pointer items-center gap-3 transition hover:opacity-90" href="https://work.weixin.qq.com/ca/cawcde31bb9ee19d24" target="_blank" rel="noreferrer" title="点击跳转到企业微信加好友界面" aria-label="点击跳转到企业微信加好友界面">
+      <img class="contact-qr" src="contact-wecom-qr.jpg" alt="企业微信二维码" />
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2 font-bold"><iconify-icon icon="mdi:wechat" class="text-xl text-emerald-200"></iconify-icon><span>企业微信加好友</span></div>
+        <p class="mt-1 text-xs leading-5 text-zinc-300">点击二维码跳转加好友，也可以扫码添加。</p>
+      </div>
+    </a>
+  </aside>
+
+  <script id="main-data" type="application/json">[{"idx":0,"type":"page","text":"三角洲项目介绍","image":null,"links":[]},{"idx":1,"type":"heading1","text":"项目介绍：","image":null,"links":[]},{"idx":2,"type":"text","text":"首先明确一点：我们这个三角洲孵化不是你们印象里的那些什么跑刀、护航、红玩、陪玩等等.....❌不是这些.....","image":null,"links":[]},{"idx":4,"type":"text","text":"首先给你们指出你们的印象误区：","image":null,"links":[]},{"idx":5,"type":"text","text":"跑刀：纯黑奴 一天也就百八十💰跑到死能有一天一千多近两千的成绩吗？","image":null,"links":[]},{"idx":6,"type":"text","text":"护航：需要很高的技术，我们这上车的全部都是刚学一星期的“新手菜鸟”何来的技术而言呢？没个一两年的游戏时长你都没资格当护航好吧？..","image":null,"links":[]},{"idx":7,"type":"text","text":"红丸：我们不做任何违背游戏生态平衡的事情！动不动就拉闸倒闭，毫无持续发展可言，且有损主板！","image":null,"links":[]},{"idx":8,"type":"text","text":"陪玩：铁子，你又不是声优女孩子，你反问我是不是带你做陪玩是啥意思....","image":null,"links":[]},{"idx":10,"type":"text","text":"所以我们不做黑奴 不跑刀 不开G！（我们这里跟车的铁子90％的都是上班族、学生党）时间都是不多的但也拿到了成绩的💯人均3-4位数/天我们有属于我们的一套玩法！不与外界内卷！不管你菜不菜！只管你动不动！","image":null,"links":[]},{"idx":12,"type":"text","text":"不吃技术！不吃技术！不吃技术！没玩过这个游戏的小白也可以上手 如果想26年好好发展这个又不影响自己主业又有额外收益的赛道！那你先不用管你会不会玩（目前跟我们车的90％都是不会玩的！都是跟随我们团队的建议与指引才去玩的！全部都是“小菜鸟”反馈都在下面！别人都行你也行！","image":null,"links":[]},{"idx":14,"type":"text","text":"你真想做好一个事情你会想尽一切办法去做！不会玩又想跟车的请你认真看完这篇文档！看完后就动身去下载三角洲来玩！玩个10-15天玩到50级基本就OK了！没有电脑的可以先手游玩熟悉长弓溪谷和零号大坝这两个地图🗺️等正式跟车的时候再用电脑🖥️ 即🉑没电脑的租一台电脑也才300来一个月很便宜的～","image":null,"links":[]},{"idx":16,"type":"text","text":"我们带了300多号学员 目前200多号破万的 最高收益100000💰➕这个项目只要你执行起来就有成绩拿！","image":null,"links":[]},{"idx":18,"type":"heading1","text":"项目收益：","image":null,"links":[]},{"idx":20,"type":"text","text":"分五个环节进行，每个环节环环相扣的！且采用收益解锁制度循序渐进进行学习与实操！就跟你学跑步一样！要先学会爬再学会走再学会跑！我们的角色就是带你从爬到跑！从0-1的细节教学！再到1-99陪你茁壮成长！","image":null,"links":[]},{"idx":22,"type":"text","text":"当你当前阶段达标一定收益后我们会给你解锁并督促你进入下一阶段↓","image":null,"links":[]},{"idx":24,"type":"text","text":"1️⃣最基础的撞车、收售物资为主","image":null,"links":[]},{"idx":25,"type":"text","text":"（群内同学人均均100-1000💰/天）实测⚠️","image":null,"links":[]},{"idx":27,"type":"text","text":"2️⃣在上一个的基础上会进行教学渠道拓展","image":null,"links":[]},{"idx":28,"type":"text","text":"收益会在前面第一阶段基础上×（1.5-3）倍","image":null,"links":[]},{"idx":29,"type":"text","text":"（群内在此阶段同学均300-2400💰/天）实测⚠️","image":null,"links":[]},{"idx":31,"type":"text","text":"3️⃣直播（手机/电脑两个版本的都有 玩法会等待更新）","image":null,"links":[]},{"idx":32,"type":"text","text":"直播这个渠道嫁接上收益又会在此前阶段×（1.5-3）倍","image":null,"links":[]},{"idx":33,"type":"text","text":"本文档📝","image":null,"links":[]},{"idx":35,"type":"text","text":"4️⃣短视频（这个是重中之重，长线收益/管道收益）","image":null,"links":[]},{"idx":36,"type":"text","text":"不光能做出自己的万粉IP抖音号，以后创作者收益/商单/广子/私域人脉都能不断被吸入！这个渠道是最后学习的","image":null,"links":[]},{"idx":37,"type":"text","text":"短视频嫁接进来我们的收益会再次×（1.5-3）倍！","image":null,"links":[]},{"idx":39,"type":"text","text":"5️⃣线下俱乐部共事（我们最终的目的）","image":null,"links":[]},{"idx":40,"type":"text","text":"就是为了筛选出在“实战”中能够“举一反三十”且成绩脱颖而出的学员！我们不缺人！缺的是人才！缺的是能够以一抵十的精英与我们奔赴更完善的三角洲实业！等组建线下俱乐部的时候能够一同前来共事并享有对应负责板块的收益分成！","image":null,"links":[]},{"idx":42,"type":"text","text":"我们公司做三角洲板块也有一段时间了（公司目前 护航 商行  撞车 板块都在做  目前教你们的就是撞车板块）","image":null,"links":[]},{"idx":51,"type":"text","text":"我们会把对外去付费学习的关于三角洲这个板块的内容都与你共享！与其单打独斗做超级个体不如拥入团队怀抱！团队给你赋能！助你助我们一同壮大💪🏻","image":null,"links":[]},{"idx":53,"type":"heading1","text":"项目门槛：","image":null,"links":[]},{"idx":55,"type":"text","text":"⚠️：门槛费就别问能不能回本这个事了....我们家的车哪个没让你们吃肉呢？对不对！你跟我们一次才会跟无数次！下面的反馈里面哪个都是啥也不会到随便回本车费到破千破万的💷","image":null,"links":[]},{"idx":57,"type":"text","text":"所以说只要你认真做每个车都是没问题的！而且你来这里如果只是天天为了纠结什么时候回本而不是怎么去做得更好去挣更多的💰的 没有这种长远想法的别来！！\n\n车费原本是想定8888💰的 因为对比这个收益来看还不止这个学费！12888都少了！！！但我们想的是要往长远发展和规模化发展！壮大我们这个三角洲队伍能够在游戏圈子立足！目前我们线下已经有了俱乐部了！大家有机会都可以到一块来深造！！！我们最终目的就是选拔出一批优秀的人才出来共同进步🤝🏻\n\n一个人可以走的更快，但一群人会走的更远👬\n\n因此我们三角洲孵化🚘费暂定2888💰➕每日净利润的20％抽成。【工作室搭建版另外价】","image":null,"links":[]},{"idx":59,"type":"text","text":"明白人都知道！！！你好我们才能更好！！！\n你赚10W我们能分走2W这才是我们想要的！而不是惦记你这小小的2888....","image":null,"links":[]},{"idx":60,"type":"text","text":"外面那些教你做三角洲俱乐部的和三角洲项目的那个不是五位数 你可以自己去抖音了解一下~\n\n后续根据团队的壮大会不断提升门槛费和分成比例","image":null,"links":[]},{"idx":61,"type":"text","text":"所以什么车都是越早上待遇越好！门槛也是最低的\n\n举个例子：当你每天收入300💰你就需要分我们60💰每个月9000就分我们1800💰\n\n不要去斤斤计较分出来的这部分💰想赚钱之前请先学会分钱！你如果觉得分钱是个很不情愿的事情，那你永远也做不成什么大事！也只能看到眼前的利益！而且你得要明白首先车费就很低！收的是2888而不是8888！没有我们彼此的付出也达不到这个收入水平！我们想要的不是那根本什么都算不上的2888车费！而是规模起来的分成管道收益！只有我们用心培养你你才能发展的越来越好！我们督促好、指点好你是我们的职责所在。你赚的多我们才能分的多🤝🏻互相合作才能共赢🎉","image":null,"links":[]},{"idx":64,"type":"heading1","text":"钱是怎么赚来的？","image":null,"links":[]},{"idx":65,"type":"text","text":"其实，钱并不是赚来的，而是帮助别人解决问题后给你的回报。你发现没，那些越想赚钱的人越是赚不到钱。\n\n抱利他之心，行利他之事，命运自然就会好转。你现在应该思考自己能给别人带来什么，能帮别人解决什么问题。什么时候你想明白了这句话，你就开始真正赚钱了。","image":null,"links":[]},{"idx":68,"type":"heading1","text":"人员要求：","image":null,"links":[]},{"idx":69,"type":"text","text":"简单熟悉三角洲游戏地图（长工溪谷、零号大坝）且行动等级达到50级！熟悉刷人点位，知道怎么避开其他队伍等。（没有技术要求！没有技术要求！没有技术要求！你想做这个行业你可以花个十天八天每天玩玩这个游戏、有执行力且能做到积极听从老师指导并改正、每天能花2-3小时⏰左右的长期主义者优先！三天打鱼两天嫌这嫌那的这类人趁早别来！一个事业最开始的开头都坚持不下去的不要来！你只适合慢慢等很轻松能暴富的东西！","image":null,"links":[]},{"idx":72,"type":"heading1","text":"电脑配置➕硬件要求等","image":null,"links":[]},{"idx":73,"type":"text","text":"没有租机渠道就用我们的渠道就行","image":null,"links":[]},{"idx":74,"type":"text","text":"笔记本台式都行！只需要能够打三角洲不卡的就行了 没啥要求 没有电脑的租电脑一个月也才368💰这样～","image":null,"links":[]},{"idx":77,"type":"heading1","text":"教学方式：","image":null,"links":[]},{"idx":78,"type":"text","text":"我们会有5位教学老师对你进行5V1的保姆级指导！老师会手把手带你跑通0-1和陪伴你的1-99过程成长！有独立的5V1教学小群与所有学员在一块的陪跑交流大群！我们一起在这个板块愉快的成长与收获！","image":null,"links":[]},{"idx":81,"type":"heading1","text":"合作周期：永久合作！永久教学！永久分成！后期体系规模成熟后会成立线下俱乐部！优秀的学员可以加入进来～得到俱乐部的扶持！助你发展！","image":null,"links":[]},{"idx":82,"type":"text","text":"注意⚠️如有“偷奸耍滑”耍小聪明的取消合作！没有我们的迭代更新哪怕暂时做起来了你也不会一直做的好下去！一次合作见人品！一顿饱还是顿顿饱我相信聪明人都明白！我这里不接纳任何耍小心思有心眼子的人❌以后更不可能一同共事！","image":null,"links":[]},{"idx":85,"type":"heading1","text":"账号准备：","image":null,"links":[]},{"idx":86,"type":"text","text":"【闲鱼🐟、抖音🎶、小红书🍠】≥2","image":null,"links":[]},{"idx":88,"type":"text","text":"前期基础撞车收售物资阶段只需要：闲鱼🐟","image":null,"links":[]},{"idx":89,"type":"text","text":"后期直播/短视频阶段就需要用到：抖音🎶和小红书🍠","image":null,"links":[]},{"idx":90,"type":"text","text":"互联网这条路我们走了10年了，这一路的摸爬滚打、迎难而上、开拓创新、团队规划、同舟共济、展露尖角、披荆斩棘、小有成就、大家都看在眼里✊🏻\n\n我们始终相信一点：商业的本质是共创共赢，你能赚到钱，过上更好的生活，我们的队伍才能越来越壮大，这才是最健康的生态。所以这是真正的开始。\n\n我们拆解了这套游戏赛道的算法，用心打磨了流程，搭建了完善的体系，但所有这些准备，只为等待一个信号：那个由你选择并点燃的星火。\n\n在这里，你看到的不是空洞的理论，而是我们亲自跑通并持续产生收益的完整迭代更新的方法论。而现在，我们决定将这套方法，毫无保留地赋能给你。\n\n2026实战筛选孵化（成绩突出的优先后期到线下俱乐部共事）我们的目标不是教你知识，而是用你我相处的时间和你的成绩，来验证我们能否成为未来新板块并肩作战的事业伙伴！\n\n我很希望大家能在这一个三角洲游戏板块里拿到应有的结果！我也更希望大家以后能在线下一同开拓更美好的前景！众人拾柴火焰高！几个人的开拓到几十人甚至成百上千人的开拓！那时的成绩毋庸置疑！","image":null,"links":[]},{"idx":92,"type":"heading1","text":"最后再总结一下如何加入三角洲行动孵化计划🤔❓📄","image":null,"links":[]},{"idx":93,"type":"text","text":"门槛定于2888💰/人+每日20％纯利抽成","image":null,"links":[]},{"idx":95,"type":"heading3","text":"我们希望找到什么样的人做这个项目？","image":null,"links":[]},{"idx":96,"type":"text","text":"这份事业需要长期的投入和共事，因此找到对的人比什么都重要，请花一分钟的时间，看看我们彼此之间是否合适。\n\n•有极强执行力的人：能够每天花2-4小时以上时间投入，将想法快速付出行动，而不是永远停留在“想”的阶段\n\n•坚定的长期主义者：后续直播和短视频阶段能够深刻理解粉丝积累需要时间的沉淀与抖音机制的考核，能够接受前期1个月左右的专业积累期，不追求短期暴富\n\n•状态稳定无沉重负债压力：有相对稳定的收入来源，能让你以更从容的心态专注于学习和成长，而不是急于求成\n\n•相关领域的从业者或深度爱好者：无论你是游戏、自媒体、电商、私域运营还是其他互联网项目的从业者，你的经验将在这里快速迸发！","image":null,"links":[]},{"idx":97,"type":"text","text":"•将分成体系视为合作基本原则的人：\n\n•最重要的一点：真正认可“团队”的理念，不只是为了学技术，更是渴望加入一个未来能共同成长的事业共同体","image":null,"links":[]},{"idx":99,"type":"heading2","text":"同时，我们不得不坦言，以下情况的朋友可能不太合适❌","image":null,"links":[]},{"idx":100,"type":"text","text":"•偷奸耍滑不诚信者：没有诚信的人永远做不成什么事！隐匿收入、逃避分成均属于不诚信合作行为，我们有权单方面终止合作停止更新玩法且费用不退！只有大家一起好起来才是真正的好起来 我们的目的也不是你的学费 说白了图的就是利润分成！如果你连我们最基本的要求你都要耍小心思的话那就不好意思了.","image":null,"links":[]},{"idx":102,"type":"text","text":"•不服从指挥者：后期为了更深层次发展我们会考虑到统一官方收款、创建MCN机构等决策，大家一起健康平衡的良性化发展！","image":null,"links":[]},{"idx":104,"type":"text","text":"•幻想一夜暴富：这个世界没有点石成金的魔术，心浮气躁是成长的最大敌人\n\n•从事任何灰色或黑色产业者：我们坚信只有阳光下的生意才能长久，价值观是生意的第一道防线\n\n•游戏基础极为薄弱者：例如，穿越火线、CS、王者荣耀、刺激战场等等地图类游戏都没有玩过的，这会导致你的学习成本极高，难以跟上节奏！\n\n重要声明：让我们在开始之前达成共识\n\n为了我们未来能更高效的共事，有些话必须说在前面\n\n*  关于结果：计划的核心是教学、陪跑与筛选服务，我们将倾囊相授，并提供一切必要的资源支持，但最终结果的大小取决于你的执行力、领悟力和坚持，成功因人而异。","image":null,"links":[]},{"idx":105,"type":"text","text":"*  关于服务：授课内容、5对1指导、变现资源对接均为虚拟服务产品，一旦开始，即意味着深度服务的启动，因此无法提供退款，请务必慎重考虑后加入。","image":null,"links":[]},{"idx":106,"type":"text","text":"*  关于选择：我们有权利终止我们认为不适合本计划未来持续进行的申请者（对人对事不诚信或负能量聚集等不利你我合作的行为因素等）这并非对您个人的否定，而是为了确保加入的每一位成员都能获得最佳的诚信共事体验。","image":null,"links":[]},{"idx":107,"type":"text","text":"想必三角洲这个游戏的热度我就不多说了！去年到今年爆🔥的一款游戏！不管有没有玩过这个游戏的都多多少少听到过这个词！可见这个游戏的影响力之大与未来发展前景的呈现！所以接下来我们要做就做风口上的事情！去吃时代的红利饭🔥🥣而不是去啃时代的尾巴肉！学会与时俱进！","image":null,"links":[]},{"idx":108,"type":"image","text":"","image":"extracted-assets/main-extra-01.jpg","links":[]},{"idx":110,"type":"heading1","text":"项目反馈：","image":null,"links":[]},{"idx":111,"type":"text","text":"因为反馈太多了我做了一个新的文档把他全部放进去不然几千张反馈图看的累","image":null,"links":[]},{"idx":112,"type":"text","text":"","image":null,"links":[{"title":"三角洲项目 学员反馈","url":"https://qaigu0wmxc.feishu.cn/wiki/BUNfwfkAZifHLDk6jrUcX1uWnJN?from=from_copylink","token":"BUNfwfkAZifHLDk6jrUcX1uWnJN"}]}]</script>
+  <script id="feedback-data" type="application/json">[{"idx":0,"type":"page","text":"三角洲项目 学员反馈"},{"idx":1,"type":"heading1","text":"下面几千张反馈只是冰山一角！越下面越精彩！务必看到最底下！都是万般努力的✊🏻"},{"idx":3,"type":"text","text":"大多都是不会玩这个游戏才刚学的并且才跟车没多久的"},{"idx":4,"type":"text","text":"基本是上班族/学生党（目前最高收益100000💰➕）"},{"idx":6,"type":"text","text":"年初内测带人到目前6.10号！破万的有200来个了！\n\n这个时代选择大于努力！方向不对努力白费🤷🏻‍♂️"},{"idx":7,"type":"text","text":"————————————————————————"},{"idx":8,"type":"text","text":"上车第二天就开始揣💰进口袋了😎最主要的是人家还是在上学的...每天都在上课...你自己好好Get一下吧！"},{"idx":9,"type":"image","src":"extracted-assets/feedback-001.png","width":1320,"height":323},{"idx":10,"type":"text","text":"上车次日200💰入兜..上车一周突破单日400💰..上车10天突破单日600💰...有空就玩，没空就不玩！时间非常自由！在大学期间还是建议拥有一项一技之长！助你毕业之后领跑在起跑线！🏃🏻‍♂️别一天天就知道窝在宿舍刷抖音啥事不干了...."},{"idx":11,"type":"image","src":"extracted-assets/feedback-002.jpg","width":1080,"height":1401},{"idx":12,"type":"text","text":"再给大家看一个实际跟咱才一个月左右近3W💰收益的！也是大学生！也是才学会玩三角洲没多久的！"},{"idx":13,"type":"image","src":"extracted-assets/feedback-003.jpg","width":1320,"height":986},{"idx":14,"type":"text","text":"后半个月基本天天破K💷有些人觉得很夸张..很不真实..但是我想说这就是事实！就是风口🔥你不信也得信！"},{"idx":16,"type":"text","text":"上车第二天直接200💰入兜并且得到了学员的认可👍🏻"},{"idx":17,"type":"text","text":"形容词：“权威”第四天直接突破单日400💰怎么说呢"},{"idx":18,"type":"image","src":"extracted-assets/feedback-004.jpg","width":1988,"height":1080},{"idx":19,"type":"text","text":"上车第10天突破单日700💰现在我只想说：太正常现象"},{"idx":20,"type":"image","src":"extracted-assets/feedback-005.jpg","width":835,"height":597},{"idx":21,"type":"text","text":"每天都是你追我赶斗志满满！基本上天天都在千八百💰"},{"idx":22,"type":"image","src":"extracted-assets/feedback-006.jpg","width":1988,"height":1080},{"idx":23,"type":"image","src":"extracted-assets/feedback-007.jpg","width":1976,"height":1080},{"idx":24,"type":"image","src":"extracted-assets/feedback-008.jpg","width":1988,"height":1080},{"idx":25,"type":"text","text":"首次刷新个人单日记录1342.67💰一天顶普通人一周工资！所以为什么说选择＞努力呢？你的24小时⏰和别人的24小时是有区别的🆚不要总以为自己很努力！如果勤劳能致富那所有人都是富翁了！方向不对努力白费🤷🏻‍♂️"},{"idx":26,"type":"image","src":"extracted-assets/feedback-009.jpg","width":1988,"height":1080},{"idx":27,"type":"text","text":"下了课就开洲 洲到睡觉💤半天5张💷美汁汁！铁铁：还行 比打工强多了👍🏻而且带进来的兄弟也起来了！开学两三天快突破单日2张💷同样都是大学生..听话..咱别把差距越拉越大了💔"},{"idx":28,"type":"image","src":"extracted-assets/feedback-010.jpg","width":1988,"height":1080},{"idx":29,"type":"text","text":"三角洲宝子MVP🏆结算画面😎入学57天干了30天休息了27天老是三天打🐟两天晒网🕸️浅浅只有个2W💷我要是57天全部干的话破5W💷都是没问题的👌🏻“有点对不起老师们的栽培了😭”"},{"idx":30,"type":"image","src":"extracted-assets/feedback-011.jpg","width":1988,"height":1080},{"idx":31,"type":"text","text":"宝：1️⃣每天下课后五六张💷2️⃣可惜现在上着学 不然我干一天基本十五张💷3️⃣把身边朋友也给带进来了六天突破单日三张💷4️⃣我说实在话！我每天打三小时游戏都能.....😅"},{"idx":32,"type":"image","src":"extracted-assets/feedback-012.jpg","width":1988,"height":1080},{"idx":33,"type":"text","text":"再给大家看看一个好男人的模板！媳妇喜欢梅赛德斯奔驰E300🚘就每天都在朝着这个目标努力！别人的目标是大玩具而你却毫无目标！这就是差距！"},{"idx":35,"type":"text","text":"1.6号正式开始带人！1.10-1.14就出了单日3-5张的成绩"},{"idx":36,"type":"text","text":"突破单日9张💷然后中途休息了一阵子忙现实的事"},{"idx":37,"type":"image","src":"extracted-assets/feedback-013.jpg","width":1491,"height":1080},{"idx":38,"type":"text","text":"休息了一阵子回来继续开干！总收益已破万💰"},{"idx":39,"type":"text","text":"心得评价：项目很不错啊 动动手 花点小心思就能赚钱 只要肯动手就不怕没💰赚！（然后又往单日破K进军了）"},{"idx":40,"type":"image","src":"extracted-assets/feedback-014.jpg","width":1988,"height":1080},{"idx":41,"type":"text","text":"一天往四位数挣！一个月3-4W！这还只是在阶段1和阶段2！还没算上后续的直播和短视频收益！自己想吧！！"},{"idx":42,"type":"image","src":"extracted-assets/feedback-015.jpg","width":1988,"height":1080},{"idx":43,"type":"text","text":"然后不断在结合新玩法！刷新单日记录1367.9💰不断在积攒梅赛德斯奔驰E300碎片🧩🚘迟早合成大玩具！！"},{"idx":44,"type":"image","src":"extracted-assets/feedback-016.jpg","width":1988,"height":1080},{"idx":45,"type":"text","text":"期待你早日把心心念念的梅赛德斯奔驰E300带回家🤩"},{"idx":47,"type":"text","text":"快来看新来的超级奶爸🍼的心得总结：1️⃣全是大佬 像优秀的人看齐2️⃣边带娃边打洲给孩子挣奶粉💷日子越来越有盼头3️⃣再搞搞把这个当主业了总比给人家当牛马强4️⃣当牛马早8晚10一个月才几K😅4️⃣每天轻松三张5️⃣游戏也打了💷也睁了6️⃣越干越起劲每天都充满激情7️⃣小孩的奶粉尿不湿玩具全出来了8️⃣感谢三角洲感谢彼此的选择与付出！什么都是双向奔赴的！9️⃣染上了洲瘾 一天不摸浑身难受🔟执行力超强！不浪费任何一丝空闲时间✌🏻"},{"idx":48,"type":"image","src":"extracted-assets/feedback-017.jpg","width":1988,"height":1080},{"idx":49,"type":"image","src":"extracted-assets/feedback-018.jpg","width":1988,"height":1080},{"idx":50,"type":"image","src":"extracted-assets/feedback-019.jpg","width":1988,"height":1080},{"idx":51,"type":"image","src":"extracted-assets/feedback-020.jpg","width":1988,"height":1080},{"idx":52,"type":"image","src":"extracted-assets/feedback-021.jpg","width":1988,"height":1080},{"idx":53,"type":"image","src":"extracted-assets/feedback-022.jpg","width":1988,"height":1080},{"idx":54,"type":"text","text":"好男人榜样“每周都靠三角洲给我老婆发带娃工资”👍🏻超级奶爸👨🏻‍🍼要开启第二个达布妞的奔赴了😎屏幕前的你看着别个每天打游戏都有💷进兜有何感想呢☺️"},{"idx":55,"type":"image","src":"extracted-assets/feedback-023.jpg","width":1080,"height":2930},{"idx":56,"type":"text","text":"奶爸👨🏻‍🍼每天又要带娃👶🏻又要照顾老婆👧🏻还要打洲🤩身兼数职每天还能稳扎稳打小几张💷中旬的时候问到：我这个月能突破第二个达布妞吗😄我们共同的回复：必须的！！！😎"},{"idx":57,"type":"image","src":"extracted-assets/feedback-024.jpg","width":1080,"height":1758},{"idx":58,"type":"text","text":"奶爸👨🏻‍🍼每天边带娃👶🏻边打洲！不知不觉都要奔赴第二个达布妞了🤩干的一直在猛猛干✊🏻看的一直在偷偷看😂差距就是这么来的！种一棵树🌳最好的时间是十年前，其次就是现在👌🏻"},{"idx":59,"type":"image","src":"extracted-assets/feedback-025.jpg","width":1080,"height":1758},{"idx":60,"type":"text","text":"奶爸👨🏻‍🍼每天边带娃👶🏻边打洲！不知不觉都要奔赴第二个达布妞了🤩干的一直在猛猛干✊🏻看的一直在偷偷看😂差距就是这么来的！种一棵树🌳最好的时间是十年前，其次就是现在👌🏻"},{"idx":61,"type":"image","src":"extracted-assets/feedback-026.jpg","width":1080,"height":1758},{"idx":62,"type":"text","text":"新手最有发言权🙋🏻‍♂️铁铁：1️⃣上学第一天就破2张💷2️⃣感觉同班同学好🐮一天四位数3️⃣我要努力买小米Su7🚘4️⃣观望了两个月感觉来晚了😭早知道早点来了5️⃣还是哥教得好～"},{"idx":63,"type":"image","src":"extracted-assets/feedback-027.jpg","width":1988,"height":1080},{"idx":64,"type":"text","text":"来三角洲🏫学习一周不到就突破单日4张了💷十天的时候都要把🚘票给搞回来了🤩新手最具有发言权！铁铁：确实爽！！！这个铁铁跟了我们8年（看昨天发的视频）"},{"idx":65,"type":"image","src":"extracted-assets/feedback-028.jpg","width":1988,"height":1080},{"idx":66,"type":"text","text":"自己的生活自己做主 自由才是最高旨意不是吗😎想打游戏就打 不想打就休息👌🏻来洲一个月虽然没有破第一个达布妞但也有85张💷了🤩执行力就是跳过情绪直接做事！不必想太多 做就对了✊🏻"},{"idx":67,"type":"image","src":"extracted-assets/feedback-029.jpg","width":1080,"height":2930},{"idx":68,"type":"text","text":"你只管在洲洲里头大步往前走 答案都在努力的路上🤗咱们一起不断默默耕种 不断开花摘果😋第一个达布妞💷只是刚开始 你我都坚信迟早拿下十个达布妞起步😎事实胜于雄辩！成绩证明一切✊🏻"},{"idx":69,"type":"image","src":"extracted-assets/feedback-030.jpg","width":1080,"height":1758},{"idx":70,"type":"text","text":"不知不觉马上要在洲洲拿捏第二个达布妞啦🤏🏻未来的你一定会感谢当初勇敢的选择😎更会感谢你露！只有勇敢开始才能知道自己的潜力到底有多大✊🏻空想只会加重焦虑、迷茫、平庸无为！"},{"idx":71,"type":"image","src":"extracted-assets/feedback-031.jpg","width":1080,"height":1758},{"idx":72,"type":"image","src":"extracted-assets/feedback-032.jpg","width":1080,"height":1173},{"idx":73,"type":"image","src":"extracted-assets/feedback-033.jpg","width":1080,"height":1173},{"idx":74,"type":"text","text":"从根本就不知道这个游戏→听我们的话去下载这个游戏玩→玩了几天就想上车→但我们还是建议多玩玩熟悉下地图→上车后学习一星期突破单日4张💷"},{"idx":75,"type":"image","src":"extracted-assets/feedback-034.jpg","width":1988,"height":1080},{"idx":76,"type":"text","text":"其实你本应该享受每天自由且兜里又能进345678910....张💷的日子的 而不是一辈子都过着寄人篱下看人脸色的日子💔"},{"idx":77,"type":"image","src":"extracted-assets/feedback-035.jpg","width":1988,"height":1080},{"idx":78,"type":"text","text":"大家都是一样的！没有谁天生就会什么什么东西！首先你要去尝试！还没尝试就否定自己那人生注定是失败的❌"},{"idx":79,"type":"image","src":"extracted-assets/feedback-036.jpg","width":1080,"height":1564},{"idx":80,"type":"text","text":"记住你是最棒的👍🏻每天下班后都要在洲奋发图强到睡觉💤每天都是额外好几张💷马上要突破第一个达布妞了😎做自己人生的主角！自己定义自己！"},{"idx":81,"type":"image","src":"extracted-assets/feedback-037.jpg","width":1988,"height":1080},{"idx":82,"type":"text","text":"谁最开始会玩这个游戏？谁还没玩就熟悉地图的？对不对？什么都得有个开始和过程！选对了路以后每天都是充实且入袋满满的！📚读不明白没关系🥹班上的枯燥也没关系👋🏻也许你能在另外的领域里熠熠发光呢🌟"},{"idx":83,"type":"image","src":"extracted-assets/feedback-038.jpg","width":1988,"height":1080},{"idx":84,"type":"text","text":"同学刚到三角洲一个月✌🏻就拿到了小50张的成绩💷比他之前的工资都要高🤩所以说一步一步脚踏实地终将会遇见更好的自己！加油✊🏻别人可以你也可以！"},{"idx":85,"type":"image","src":"extracted-assets/feedback-039.jpg","width":1080,"height":1564},{"idx":86,"type":"text","text":"谁都是从小白过来的！没有我们的教学没有他们的今天！没有自己的选择也没有如今的成绩！所以时刻记住：选择大于努力！结合我们的教学且把执行力拉🈵三角洲孵化这个项目不会让你失望！"},{"idx":88,"type":"text","text":"看看👇🏻这位铁子上车第四天的成绩与总结："},{"idx":90,"type":"text","text":"车 无敌呀 谁正常上班一天有个300 400的 我这还是下班搞一搞 上班职位比较特殊吧 上班的是个闲职 我浑水摸鱼的时间会比较多一点 然后我之前看到伦哥直播说 要玩一玩这个三角洲行动 然后我就去玩了几把 上瘾了天天都玩 天天都想摸大红 当然 也是各位老师教的好有问必答 然后自己可能反应慢一点 那就多用点时间磨一磨。"},{"idx":91,"type":"image","src":"extracted-assets/feedback-040.jpg","width":1988,"height":1080},{"idx":92,"type":"image","src":"extracted-assets/feedback-041.jpg","width":1988,"height":1080},{"idx":93,"type":"image","src":"extracted-assets/feedback-042.jpg","width":1491,"height":1080},{"idx":94,"type":"text","text":"每天打着游戏还有千八百💰的收入 这不是你小时候梦寐以求的生活吗？现在机会摆在你面前看你怎么选！"},{"idx":95,"type":"image","src":"extracted-assets/feedback-043.jpg","width":1491,"height":1080},{"idx":96,"type":"image","src":"extracted-assets/feedback-044.jpg","width":1988,"height":1080},{"idx":97,"type":"text","text":"过年🧨的时候大家都在玩 他忙完就玩起了三角洲 一天六七张💷一点都不想荒废时间🥹这么努力还不都是为了这碎银几两 偏偏这碎银几两 能解世间惆怅🤷‍♂️"},{"idx":98,"type":"image","src":"extracted-assets/feedback-045.jpg","width":1491,"height":1080},{"idx":99,"type":"image","src":"extracted-assets/feedback-046.jpg","width":1491,"height":1080},{"idx":100,"type":"text","text":"天天在家里打着三角洲每晚一算账老是四位数😭一天都顶普通人上5-7天班了🤩没猜错的话大家小时候的梦想都有一个：要是能天天打游戏就好了🤪"},{"idx":101,"type":"image","src":"extracted-assets/feedback-047.jpg","width":1080,"height":2344},{"idx":102,"type":"text","text":"这架势一个月3个W都嫌少了🤩你以为你一个月3K别一个月3W只是你的10倍吗❓你错啦..你一个月3K花2K还剩1K😅人家3W花2K还剩2.8W...人家是你的28倍好吧.."},{"idx":104,"type":"text","text":"“关中王👑”又来了😎每天四位数💷顶不顶我说了不算了 屏幕前的你说了算🤩人跟人的唯一差距就是勇气和执行力✊🏻来👀看看今天的你在哪一步📈决定着你明天的成就到哪一高度💪🏻"},{"idx":105,"type":"image","src":"extracted-assets/feedback-048.jpg","width":1080,"height":2930},{"idx":106,"type":"text","text":"别人不知不觉在洲洲拿到快7个达布妞的成绩啦😎你不知不觉观望了四个月了🤷🏻‍♂️你和别人之间的差距越拉越大🤭弱者总找借口！强者直接行动✊🏻"},{"idx":107,"type":"image","src":"extracted-assets/feedback-049.jpg","width":1080,"height":2344},{"idx":108,"type":"text","text":"回头看 轻舟⛵已过万重山⛰️9个达布妞的成绩呈现眼前时一切都是最好的安排😭不负彼此！成长的磨砺、奋斗的汗水都会化作未来的底气和格局✊🏻累积成向上攀爬的阶梯会撑着你看到跟高处的风景！"},{"idx":109,"type":"image","src":"extracted-assets/feedback-050.jpg","width":1079,"height":2341},{"idx":110,"type":"text","text":"洲洲王👑来啦❗❗❗❗😎\n都快十个达布妞💷了哇咔咔🤩\n努力的意义不是为了让💰定义我们\n而是让我们有能力定义自己的生活✊🏻"},{"idx":111,"type":"image","src":"extracted-assets/feedback-051.jpg","width":1080,"height":1758},{"idx":113,"type":"text","text":"连三角洲端游都没下载😂结果第二天就这样了...."},{"idx":114,"type":"text","text":"所以你问我这个东西难不难学...我也不知道怎么回你了..."},{"idx":115,"type":"image","src":"extracted-assets/feedback-052.jpg","width":1079,"height":1173},{"idx":116,"type":"text","text":"每天有工作(๑•̀ω•́๑)💼在忙着 但也不影响每天下班后再额外多个两三张💷的副业游戏收入～"},{"idx":117,"type":"image","src":"extracted-assets/feedback-053.jpg","width":1491,"height":1080},{"idx":118,"type":"image","src":"extracted-assets/feedback-054.jpg","width":1491,"height":1080},{"idx":119,"type":"text","text":"大家都是自身有工作但又不满足于工作现状的有志青年！"},{"idx":120,"type":"text","text":"你工作归工作 生活归生活 打游戏归打游戏 三者又不冲突"},{"idx":122,"type":"text","text":"别总是纠结你这个2888能不能回来了...格局小了...你应该在意的是通过自己的努力赚个学费的几十倍还是上百倍明白吗？目光放长远...学费闭着眼睛都能回来....说实在的2888定的真的是低的不行了对于这个项目价值来说.."},{"idx":123,"type":"image","src":"extracted-assets/feedback-055.jpg","width":1988,"height":1080},{"idx":124,"type":"image","src":"extracted-assets/feedback-056.jpg","width":1080,"height":1173},{"idx":125,"type":"text","text":"铁子：虽然破W了但还没达到伦伦班级的人均水平🤪目标平均一个月最低1W😎用初步成绩验证了：从不会玩→学着玩→会玩了→玩明白了→玩出成绩来了💯💷这是一个进步阶梯的过程！"},{"idx":126,"type":"image","src":"extracted-assets/feedback-057.jpg","width":1080,"height":1172},{"idx":127,"type":"text","text":"还有我想说呀：别总给自己找什么借口，自己每天多忙多忙啥的...只是给你的懒惰和认知找借口罢了...等你真正需要用到💰没💰的时候你就知道什么叫残酷了...💰才是自己和家人的底气！趁年轻！趁风口狠狠干！\n\n别人都能边照顾家人边学新知识来填充口袋里的💰你有什么理由说你很忙呢？当你脱离你手头的工作岗位的时候你还有额外收入吗？如果没有那就请正视“副业”"},{"idx":129,"type":"text","text":"别总把自己每天整得好像很忙很忙一样....忙出个啥名堂来了呢？到最后总结是不是在瞎忙活？把自己时间规划好！多做一些有意义的事！【新手最具话语权🎤】"},{"idx":131,"type":"text","text":"一空下来直接开始学习！直接上手！直接出成绩怎么说？"},{"idx":132,"type":"image","src":"extracted-assets/feedback-058.jpg","width":1988,"height":1080},{"idx":133,"type":"text","text":"有时候不迈出第一步选择尝试一下都不知道自己还有这些潜力呢！试试说不定发展的比你主业还强呢👍🏻别人都是一两天就上手的！别人都行你为什么不行？"},{"idx":134,"type":"image","src":"extracted-assets/feedback-059.jpg","width":1491,"height":1080},{"idx":135,"type":"image","src":"extracted-assets/feedback-060.jpg","width":1080,"height":1173},{"idx":136,"type":"image","src":"extracted-assets/feedback-061.jpg","width":1491,"height":1080},{"idx":137,"type":"image","src":"extracted-assets/feedback-062.jpg","width":1988,"height":1080},{"idx":138,"type":"text","text":"年前来洲的宝子 年后每天不仅在努力工作🤩下班后更在努力打洲✊🏻每天额外都是三四张💷最开始大家都是不会玩这个游戏的 如今都硕果累累了😎"},{"idx":139,"type":"image","src":"extracted-assets/feedback-063.jpg","width":1080,"height":1564},{"idx":140,"type":"image","src":"extracted-assets/feedback-064.jpg","width":1988,"height":1080},{"idx":141,"type":"text","text":"才来半个月 现在每天下班后稳定3-4张💷怎么说"},{"idx":142,"type":"image","src":"extracted-assets/feedback-065.jpg","width":1988,"height":1080},{"idx":143,"type":"text","text":"过年前夕 忙的不可开交的情况下🧨还能抽出时间玩三角洲还每天几张💷简直又自由又轻松又适合三全齐美✌🏻这不就是你想要的吗❓"},{"idx":144,"type":"image","src":"extracted-assets/feedback-066.jpg","width":1491,"height":1080},{"idx":145,"type":"text","text":"回归回来直接连连破纪录🥊一天6张💷怎么说呢"},{"idx":146,"type":"image","src":"extracted-assets/feedback-067.jpg","width":1491,"height":1080},{"idx":147,"type":"text","text":"每天在洲都肥肥得吃🤩56789张💷来了一个来月现在直奔2W去了👍🏻有些事实就摆在眼前 稍微动动脑子就能想通！时代在变你的认知不跟着变那就注定被淘汰🤷🏻‍♂️有的人只听自己喜欢听的 只看九年义务教育以内的东西 自欺欺人😂"},{"idx":148,"type":"image","src":"extracted-assets/feedback-068.jpg","width":1491,"height":1080},{"idx":149,"type":"image","src":"extracted-assets/feedback-069.jpg","width":1491,"height":1080},{"idx":150,"type":"text","text":"来了一个月了马上突破2W💰了 能其实你本应该享受每天自由且兜里又能进345678910....张💷的日子的 而不是一辈子都过着寄人篱下看人脸色朝八晚六的日子💔现在你有的选 不是没得选✊🏻"},{"idx":151,"type":"image","src":"extracted-assets/feedback-070.jpg","width":1491,"height":1080},{"idx":152,"type":"image","src":"extracted-assets/feedback-071.jpg","width":1491,"height":1080},{"idx":153,"type":"text","text":"自由才是生活的最高旨意不是吗☀️总不能一辈子寄人篱下看人脸色吧😅在三角洲孵化自己的人生自己做主😎想干就干！想休息就休息不影响任何✌🏻"},{"idx":154,"type":"image","src":"extracted-assets/feedback-072.jpg","width":1491,"height":1080},{"idx":155,"type":"text","text":"以往早八晚六还只有200日薪的🐮🐴日子已经一去不复返咯🤪现在三角洲才是自己人生的主角！一天顶之前好几天了🤩每天可乐呵了！铁铁用实际行动证明了一句话：方向对了 事半功倍✌🏻"},{"idx":156,"type":"image","src":"extracted-assets/feedback-073.jpg","width":1491,"height":1080},{"idx":157,"type":"text","text":"天天五六七八九十张💷来了两个来月拿到了两个多达布妞🤩他当初又怎么会知道自己今天会拿到如此优异的成绩呢😎谁都不知道未来会是什么样！所以更为重要的是：敢想敢干！全力以赴✊🏻"},{"idx":158,"type":"image","src":"extracted-assets/feedback-074.jpg","width":1080,"height":2344},{"idx":159,"type":"text","text":"在洲洲天天七八张💷已成常态化了😎一天顶之前上班💼一星期了！如果你不花时间去创造你想要的生活 那你就会花很多时间去应付那些你不想要的生活🤷🏻‍♂️success的路上 没有人会叫你起床🛏️也没有人会为你买单👋🏻"},{"idx":160,"type":"image","src":"extracted-assets/feedback-075.jpg","width":1080,"height":1758},{"idx":161,"type":"text","text":"洲了三个来月顶上一年的班了🤣这就是认知、选择、执行力不同所产生的成绩差距💯我们静静的做 你继续慢慢的看就行了👌🏻洲洲里的同学都把行动交给现在 把结果交给时间就完事了✊🏻"},{"idx":162,"type":"image","src":"extracted-assets/feedback-076.jpg","width":1080,"height":1758},{"idx":163,"type":"text","text":"洲了三个来月顶上一年的班了🤣这就是认知、选择、执行力不同所产生的成绩差距💯我们静静的做 你继续慢慢的看就行了👌🏻洲洲里的同学都把行动交给现在 把结果交给时间就完事了✊🏻"},{"idx":164,"type":"image","src":"extracted-assets/feedback-077.jpg","width":1080,"height":1758},{"idx":166,"type":"image","src":"extracted-assets/feedback-078.jpg","width":1491,"height":1080},{"idx":167,"type":"text","text":"看看别人怎么评价的：过两天喊现实朋友一块搞 其实挺简单的 有手就行👋🏻一个人一天随便抽空搞个几百💰两个人不就随便破千了吗？这不比你给人家朝九晚五当牛做马强太多了吧？"},{"idx":168,"type":"image","src":"extracted-assets/feedback-079.jpg","width":1080,"height":1173},{"idx":169,"type":"text","text":"很多事情行动起来就变得简单了🤩每天都在许愿一天比一天多一张🌠并且每天都在如愿✌🏻过完年后每天都在不断突破且稳着四五张💷这是什么神仙状态和日子呀😊"},{"idx":170,"type":"image","src":"extracted-assets/feedback-080.jpg","width":1080,"height":2346},{"idx":171,"type":"text","text":"在洲洲一手抓生活💷一手抓热爱✌🏻接着一起来欣赏一下铁铁是怎么迎接第一个达布妞的吧😎要做成一件事的第一步从来不是“做到最好”而是“先做”！！✊🏻"},{"idx":172,"type":"image","src":"extracted-assets/feedback-081.jpg","width":1080,"height":1172},{"idx":173,"type":"text","text":"每天五六七八张💷这小日子洲得滋润呀🤩不要总怕自己做得不好...怕的是你想了一万次却一次都没试🤷🏻‍♂️所以说人家都猛猛奔赴第二个达布妞了🫣你又观望出什么名堂了呢😆"},{"idx":174,"type":"image","src":"extracted-assets/feedback-082.jpg","width":1080,"height":1758},{"idx":175,"type":"text","text":"不知不觉洲洲突破二奔赴三😎借同学的一句话：一想二干三Success🤩一等二看三落空😅所以人家干了几个月干成了 你看了几个月确实也看🈳了...."},{"idx":176,"type":"image","src":"extracted-assets/feedback-083.jpg","width":1079,"height":2341},{"idx":177,"type":"text","text":"不知不觉快拿捏🤏🏻第三个达布妞啦💷人家付出了多少 而你又观望了多少❓你凭什么不努力又什么都想要❓想要的一切不都是拼出来的吗✊🏻上天一定是眷顾那些在认真努力的人👌🏻"},{"idx":178,"type":"image","src":"extracted-assets/feedback-084.jpg","width":1080,"height":1172},{"idx":179,"type":"text","text":"大家都是有工作的！工作之余再打打游戏额外每天两三张不香吗？又能放松又能挣米两全其美🤩"},{"idx":181,"type":"text","text":"铁子：每天下班后收益两张💷其中离不开老师的指导和同学们的帮扶！"},{"idx":182,"type":"image","src":"extracted-assets/feedback-085.jpg","width":1988,"height":1080},{"idx":183,"type":"text","text":"铁铁：一步一个脚印👣每个脚步都作数！每一次的突破都是在鼓舞自己更加勇往直前😎依旧是零散时间小小入兜五张💷✌🏻人家天天上着班嘞...你不是也是天天上着班嘛...怎么差距那么大呢🤔"},{"idx":184,"type":"image","src":"extracted-assets/feedback-086.jpg","width":1491,"height":1080},{"idx":185,"type":"text","text":"笑死了🤣🤣🤣学员一天四五张💷收益后教学老师玩起抽象来了：总比你上那个破班好很多吧😂😂😂"},{"idx":186,"type":"image","src":"extracted-assets/feedback-087.jpg","width":1988,"height":1080},{"idx":187,"type":"text","text":"别总给自己找借口啦😅什么我没时间、我不会玩..这位同学最开始也不会呀...一样每天晚上7点🕖才下班啊😂现在人家工作娱乐两不误最主要是口袋💷还更鼓了这你受得了吗🤩"},{"idx":188,"type":"image","src":"extracted-assets/feedback-088.jpg","width":1080,"height":1172},{"idx":189,"type":"text","text":"过年在家没电脑🖥️也不让自己闲着✌🏻"},{"idx":190,"type":"text","text":"网吧一坐三角洲一打兜里又进小四张💷"},{"idx":191,"type":"text","text":"努力提升自己永远比仰望别人更有意义"},{"idx":192,"type":"image","src":"extracted-assets/feedback-089.jpg","width":1491,"height":1080},{"idx":193,"type":"image","src":"extracted-assets/feedback-090.jpg","width":1491,"height":1080},{"idx":194,"type":"text","text":"我们教学老师说话老有意思了哈哈哈哈 学员破700➕单日收益！事发突然给教学老师又抽象起来了！"},{"idx":195,"type":"image","src":"extracted-assets/feedback-091.jpg","width":1491,"height":1080},{"idx":196,"type":"text","text":"现在在三角洲孵化🐣的每一天🤩\n都顶他之前上班的五六天🤪差距呀\n五天顶一月 所以说不是你不够努力 \n而是你的努力没努对方向😅事实如此"},{"idx":197,"type":"image","src":"extracted-assets/feedback-092.jpg","width":1988,"height":1080},{"idx":198,"type":"image","src":"extracted-assets/feedback-093.jpg","width":1988,"height":1080},{"idx":199,"type":"image","src":"extracted-assets/feedback-094.jpg","width":1988,"height":1080},{"idx":200,"type":"text","text":"来三角洲瞅瞅👀两位：因为听我们的话才去学着玩的“菜鸟们”9天和50天的蜕变🤩所以说：谁的起点都是一样的！别人越跑越有劲！跑的越来越远！你和别人的差距也就越来越大了💔"},{"idx":201,"type":"image","src":"extracted-assets/feedback-095.jpg","width":1080,"height":1368},{"idx":202,"type":"text","text":"先跑通0-1 再复制1-99 第二天就破三张了💷"},{"idx":203,"type":"image","src":"extracted-assets/feedback-096.jpg","width":1491,"height":1080},{"idx":204,"type":"text","text":"天天就是洲了个洲！洲完笑嘻嘻的回家过年😊和害怕回家过年😣形成了鲜明的对比🆚在外辛辛苦苦工作了一年最后一看兜里都没剩啥了..这难道真是你想要的生活吗🙁"},{"idx":205,"type":"image","src":"extracted-assets/feedback-097.jpg","width":1491,"height":1080},{"idx":206,"type":"image","src":"extracted-assets/feedback-098.jpg","width":1491,"height":1080},{"idx":207,"type":"text","text":"跑通0-1后天天都是好几张🤩玩着玩着不知不觉就要玩出个达布妞💷来了🤩没想到吧 别人玩着游戏还把口袋给干鼓了😄对比自己每天的朝八晚七有何感想呢...."},{"idx":208,"type":"image","src":"extracted-assets/feedback-099.jpg","width":1080,"height":1172},{"idx":209,"type":"text","text":"每天额外几张几张💷的已成常态化了😎自己好起来了还把身边小伙伴一起带起来了🥳在洲洲的每一分时间都会默默把碎片拼成答案🧩你只管用这份答案回应你的未来人生即🉑"},{"idx":210,"type":"image","src":"extracted-assets/feedback-100.jpg","width":1080,"height":1758},{"idx":211,"type":"text","text":"拿捏🤏🏻第二个达布妞💷继续猛猛奔赴第三个😎生活不会辜负敢于尝试且不断用心的人！把洲洲做到极致！定能成就非凡✌🏻未来你会万分感谢你露！更会百万分感谢你自己✊🏻"},{"idx":212,"type":"image","src":"extracted-assets/feedback-101.jpg","width":1080,"height":1758},{"idx":213,"type":"text","text":"恭喜后起“洲洲王”拿捏🤏🏻第三个达布妞💷别人在对的赛道🏎️上驰骋一年就能顶之前给人当🐮做🐴五年起步！！一点都不夸张！！事实摆在眼前🤪用成绩应验了：方向对了 努力才会变得更有意义✊🏻"},{"idx":214,"type":"image","src":"extracted-assets/feedback-102.jpg","width":1080,"height":1758},{"idx":215,"type":"text","text":"铁铁：我老婆今晚化了美美的妆 说带她出去拍照的 结果照还没拍 就跑回来弄这个三角洲了😂"},{"idx":217,"type":"text","text":"看看新人入局 这执行力真的没话说 我都怕被打😂"},{"idx":218,"type":"image","src":"extracted-assets/feedback-103.jpg","width":1491,"height":1080},{"idx":219,"type":"image","src":"extracted-assets/feedback-104.jpg","width":1491,"height":1080},{"idx":220,"type":"text","text":"熟能生巧 举一反三 方能越来越好"},{"idx":221,"type":"image","src":"extracted-assets/feedback-105.jpg","width":1491,"height":1080},{"idx":222,"type":"text","text":"过年前夕 忙的不可开交的情况下🧨"},{"idx":223,"type":"text","text":"还能抽出时间玩三角洲还每天几张💷"},{"idx":224,"type":"text","text":"简直又自由又轻松又适合三全齐美✌🏻"},{"idx":225,"type":"image","src":"extracted-assets/feedback-106.jpg","width":1988,"height":1080},{"idx":226,"type":"image","src":"extracted-assets/feedback-107.jpg","width":1988,"height":1080},{"idx":227,"type":"text","text":"不是铁铁😱大年初一人家都在忙着吃吃喝喝😋你却在忙着打三角洲啊啊啊！！你这一天8张💷口袋鼓的真的该你挣的！我不眼红😭"},{"idx":228,"type":"image","src":"extracted-assets/feedback-108.jpg","width":1080,"height":1955},{"idx":229,"type":"text","text":"MVP结算画面🏆铁铁：1️⃣最开始我还害怕回不了本2️⃣现在每天都是五六七八张💷3️⃣很自由比打工强🤩所以说要一辈子给人家当🐮做🐴看人家脸色过日子还是做自己人生的主角！你有的选～"},{"idx":230,"type":"image","src":"extracted-assets/feedback-109.jpg","width":1988,"height":1080},{"idx":231,"type":"text","text":"在三角洲得先装模作样 再像模像样 最后有模有样😎破五位数只是一个小小的开始 不能因此而骄傲自满😊得不断突破给自己的定的一个接一个目标✊🏻做自己人生的主角！不断做大做强🤩"},{"idx":232,"type":"image","src":"extracted-assets/feedback-110.jpg","width":1080,"height":1564},{"idx":233,"type":"text","text":"铁铁：“三角洲不累还好玩 劳逸结合”🤩想干就干 不想干就休息！再也不用看别人脸色✌🏻有空就多整 没空就随便整整每天都好几张💷美汁汁～"},{"idx":234,"type":"image","src":"extracted-assets/feedback-111.jpg","width":1491,"height":1080},{"idx":235,"type":"text","text":"亲 你的意思是你出去玩了一下午回来打着三角洲晚上一算账还有9张💷❓是这个意思吗🤪还天天期待着破k上电视📺呢哈哈哈哈🤩目标给自己定的明明白白的！"},{"idx":236,"type":"image","src":"extracted-assets/feedback-112.jpg","width":1080,"height":2736},{"idx":237,"type":"text","text":"完美阐述了“物以类聚 人以群分”🤪始终以优秀的人为榜样！与优秀的人一同前行✊🏻三个月不到两百来张💷的成绩蛮不错的啦🤩愿大家未来都能在适合自己的方向里发光发热✨"},{"idx":238,"type":"image","src":"extracted-assets/feedback-113.jpg","width":1491,"height":1080}]</script>
+  <script>
+    const mainData = JSON.parse(document.getElementById('main-data').textContent);
+    const feedbackData = JSON.parse(document.getElementById('feedback-data').textContent);
+    const mainContent = document.getElementById('main-content');
+    const feedbackContent = document.getElementById('feedback-content');
+
+    function iconFor(type) {
+      if (type === 'heading1') return 'lucide:bookmark';
+      if (type === 'heading2' || type === 'heading3') return 'lucide:list-tree';
+      if (type === 'image') return 'lucide:image';
+      return 'lucide:chevron-right';
+    }
+
+    function makeTextCard(row, options = {}) {
+      const isHead = row.type && row.type.startsWith('heading');
+      const card = document.createElement('article');
+      card.className = 'doc-block reveal';
+      const text = row.text || '';
+      card.innerHTML = isHead
+        ? '<div class="doc-heading"><span class="tag"><iconify-icon icon="' + iconFor(row.type) + '"></iconify-icon><span>' + escapeHtml(row.type) + '</span></span><h3 class="doc-title text-2xl font-black sm:text-3xl">' + escapeHtml(text) + '</h3></div>'
+        : '<p class="doc-text' + (options.feedback && row.type === 'text' ? ' feedback-text-highlight' : '') + '">' + (options.feedback && row.type === 'text' ? formatFeedbackText(text) : formatText(text)) + '</p>';
+      if (row.links && row.links.length) {
+        const links = document.createElement('div');
+        links.className = 'mt-4 flex flex-wrap gap-2';
+        links.innerHTML = row.links.map(link => '<a class="inline-flex items-center gap-2 sharp border border-sky-300/30 bg-sky-300/10 px-3 py-2 text-sm text-sky-100 hover:bg-sky-300/15" target="_blank" rel="noreferrer" href="' + escapeAttr(link.url || '#') + '"><iconify-icon icon="lucide:external-link"></iconify-icon>' + escapeHtml(link.title || '相关链接') + '</a>').join('');
+        card.appendChild(links);
+      }
+      return card;
+    }
+
+    function makePriceBoard() {
+      const board = document.createElement('article');
+      board.className = 'price-board reveal sharp mb-8 overflow-hidden px-5 py-5 sm:px-6 sm:py-6';
+      board.innerHTML = '<div class="grid gap-5 lg:grid-cols-[.8fr_1.2fr] lg:items-center">' +
+        '<div><div class="inline-flex items-center gap-2 sharp border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-100">项目门槛</div>' +
+        '<div class="mt-3 flex flex-wrap items-end gap-3"><span class="price-num font-black text-amber-200">2888</span><span class="pb-2 text-lg font-semibold text-white/90">元 / 人</span></div></div>' +
+        '<div class="grid gap-3 sm:grid-cols-2"><div class="sharp border border-white/10 bg-white/5 p-4"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">收益抽成</div><div class="mt-2 text-3xl font-black text-sky-200">20%</div><div class="mt-2 text-sm text-zinc-300">每日净利润</div></div>' +
+        '<div class="sharp border border-white/10 bg-white/5 p-4"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">合作周期</div><div class="mt-2 text-2xl font-black text-emerald-200">永久</div><div class="mt-2 text-sm text-zinc-300">长期教学 + 分成</div></div></div></div>';
+      return board;
+    }
+
+    function makeImageCard(row, label) {
+      const card = document.createElement('article');
+      card.className = 'doc-image reveal feedback-item';
+      const captionClass = label.startsWith('反馈图片') ? 'feedback-caption mt-2 text-xs' : 'mt-2 text-xs text-zinc-500';
+      card.innerHTML = '<img loading="lazy" decoding="async" class="bg-black/30 object-contain" src="' + escapeAttr(row.src || row.image) + '" alt="' + escapeAttr(label) + '" />' +
+        '<div class="' + captionClass + '">' + escapeHtml(label) + '</div>';
+      return card;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    }
+    function formatText(value) {
+      return escapeHtml(value).replace(/(跑刀|护航|红丸|陪玩|不吃技术)/g, '<span class="hot-term">$1</span>');
+    }
+    function formatFeedbackText(value) {
+      return String(value || '')
+        .split(/\n+/)
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => '<span class="feedback-line">' + escapeHtml(line) + '</span>')
+        .join('');
+    }
+    function escapeAttr(value) { return escapeHtml(value).replace(/'/g, '&#39;'); }
+
+    mainData.forEach((row) => {
+      if (row.idx === 111 || row.idx === 112) return;
+      if (row.type === 'image') mainContent.appendChild(makeImageCard({src: row.image}, '主文档提取图片（前三张二维码图已跳过）'));
+      else {
+        mainContent.appendChild(makeTextCard(row));
+        if ((row.text || '').includes('项目门槛')) mainContent.appendChild(makePriceBoard());
+      }
+    });
+
+    let feedbackHighlightStarted = false;
+    feedbackData.forEach((row, index) => {
+      if (row.type === 'image') {
+        feedbackContent.appendChild(makeImageCard(row, '反馈图片 #' + String(feedbackContent.querySelectorAll('img').length + 1).padStart(3, '0')));
+        feedbackHighlightStarted = true;
+      } else {
+        feedbackContent.appendChild(makeTextCard(row, { feedback: feedbackHighlightStarted }));
+      }
+    });
+
+    const compactToggle = document.getElementById('compact-toggle');
+    compactToggle.addEventListener('click', () => {
+      feedbackContent.classList.toggle('feedback-flow');
+      feedbackContent.classList.toggle('feedback-grid');
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('show'); });
+    }, { threshold: .08 });
+    reveals.forEach(el => observer.observe(el));
+
+    const progress = document.querySelector('.progress');
+    const contactDock = document.querySelector('.contact-dock');
+    function updateProgress() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      progress.style.setProperty('--scroll-progress', pct + '%');
+      contactDock.classList.toggle('is-hidden', window.scrollY < window.innerHeight * 0.35);
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    window.addEventListener('pointermove', (event) => {
+      const x = (event.clientX / window.innerWidth) * 100;
+      const y = (event.clientY / window.innerHeight) * 100;
+      document.body.style.setProperty('--mx', x.toFixed(2) + '%');
+      document.body.style.setProperty('--my', y.toFixed(2) + '%');
+    }, { passive: true });
+
+    const visitorApiBase = window.VISITOR_API_BASE || (
+      location.protocol === 'file:' || location.hostname === '127.0.0.1' || location.hostname === 'localhost'
+        ? 'http://127.0.0.1:8791'
+        : location.origin
+    );
+    const visitorIdKey = 'delta_project_visitor_id';
+    const sessionIdKey = 'delta_project_session_id';
+    const visitorId = localStorage.getItem(visitorIdKey) || crypto.randomUUID();
+    const sessionId = sessionStorage.getItem(sessionIdKey) || crypto.randomUUID();
+    localStorage.setItem(visitorIdKey, visitorId);
+    sessionStorage.setItem(sessionIdKey, sessionId);
+
+    function visitorPayload() {
+      return JSON.stringify({
+        visitorId,
+        sessionId,
+        path: location.pathname + location.hash,
+        title: document.title
+      });
+    }
+    function sendHeartbeat() {
+      fetch(visitorApiBase + '/api/heartbeat', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: visitorPayload(),
+        keepalive: true
+      }).catch(() => {});
+    }
+    sendHeartbeat();
+    setInterval(sendHeartbeat, 10000);
+    window.addEventListener('pagehide', () => {
+      navigator.sendBeacon(visitorApiBase + '/api/leave', visitorPayload());
+    });
+  </script>
+</body>
+</html>
