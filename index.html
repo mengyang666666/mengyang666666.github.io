@@ -47,6 +47,10 @@
     .content-card h3, .content-card p { overflow-wrap: anywhere; }
     .image-frame { border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.24); border-radius: 8px; overflow: hidden; }
     .price-board { border: 1px solid rgba(246,211,101,.28); background: linear-gradient(135deg, rgba(246,211,101,.14), rgba(255,255,255,.06)); box-shadow: 0 18px 50px rgba(0,0,0,.16); }
+    .price-tier { display: inline-flex; align-items: center; gap: .5rem; border-radius: 8px; padding: .5rem .9rem; font-size: clamp(1.05rem, 1.45vw, 1.35rem); font-weight: 950; letter-spacing: 0; }
+    .price-tier-basic { border: 1px solid rgba(125,211,252,.38); background: linear-gradient(135deg, rgba(125,211,252,.18), rgba(141,240,190,.08)); color: #bae6fd; text-shadow: 0 0 18px rgba(125,211,252,.3); }
+    .price-tier-middle { border: 1px solid rgba(141,240,190,.42); background: linear-gradient(135deg, rgba(141,240,190,.2), rgba(246,211,101,.08)); color: #bbf7d0; text-shadow: 0 0 18px rgba(141,240,190,.32); }
+    .price-tier-premium { border: 1px solid rgba(246,211,101,.52); background: linear-gradient(135deg, rgba(246,211,101,.24), rgba(251,113,133,.1)); color: #fde68a; box-shadow: 0 0 28px rgba(246,211,101,.18), inset 0 1px 0 rgba(255,255,255,.18); text-shadow: 0 0 22px rgba(246,211,101,.42); }
     .price-num { font-size: clamp(2.6rem, 5vw, 4.8rem); line-height: .95; letter-spacing: 0; }
     .flow-section { position: relative; padding-left: 1.5rem; }
     .flow-section::before { content: ""; position: absolute; left: 0; top: .35rem; bottom: .35rem; width: 2px; background: linear-gradient(180deg, rgba(141,240,190,.85), rgba(125,211,252,.12)); }
@@ -238,13 +242,45 @@
     }
 
     function makePriceBoard() {
-      const board = document.createElement('article');
-      board.className = 'price-board reveal sharp mb-8 overflow-hidden px-5 py-5 sm:px-6 sm:py-6';
-      board.innerHTML = '<div class="grid gap-5 lg:grid-cols-[.8fr_1.2fr] lg:items-center">' +
-        '<div><div class="inline-flex items-center gap-2 sharp border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-100">项目门槛</div>' +
-        '<div class="mt-3 flex flex-wrap items-end gap-3"><span class="price-num font-black text-amber-200">2888</span><span class="pb-2 text-lg font-semibold text-white/90">元 / 人</span></div></div>' +
-        '<div class="grid gap-3 sm:grid-cols-2"><div class="sharp border border-white/10 bg-white/5 p-4"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">收益抽成</div><div class="mt-2 text-3xl font-black text-sky-200">20%</div><div class="mt-2 text-sm text-zinc-300">每日净利润</div></div>' +
-        '<div class="sharp border border-white/10 bg-white/5 p-4"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">合作周期</div><div class="mt-2 text-2xl font-black text-emerald-200">永久</div><div class="mt-2 text-sm text-zinc-300">长期教学 + 分成</div></div></div></div>';
+      const plans = [
+        {
+          name: '初级档',
+          price: '288',
+          tierClass: 'price-tier-basic',
+          audience: '适合宝妈，上班族，时间不充裕，低成本做副业',
+          audienceWide: true,
+          cycle: '教会你撞车',
+          note: '不提供订单',
+        },
+        {
+          name: '中级档',
+          price: '2888',
+          tierClass: 'price-tier-middle',
+          commission: '20%',
+          audience: '适合时间充裕者，预算足够，低成本创业',
+          cycle: '长期教学 + 分成',
+          note: '5位老师在线教你，保你学会，提供订单',
+        },
+        {
+          name: '高级档',
+          price: '16888',
+          tierClass: 'price-tier-premium',
+          note: '派人过去帮你搭建线下工作室，教你做一手订单，提供时时更新的新方案',
+        },
+      ];
+      const board = document.createElement('div');
+      board.className = 'reveal mb-8 grid gap-4 lg:grid-cols-3';
+      board.innerHTML = plans.map(plan =>
+        '<article class="price-board sharp overflow-hidden px-5 py-5 sm:px-6 sm:py-6">' +
+          '<div class="price-tier ' + escapeAttr(plan.tierClass) + '">' + escapeHtml(plan.name) + '</div>' +
+          '<div class="mt-3 flex flex-wrap items-end gap-3"><span class="price-num font-black text-amber-200">' + escapeHtml(plan.price) + '</span><span class="pb-2 text-lg font-semibold text-white/90">元 / 人</span></div>' +
+          (plan.cycle ? '<div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">' +
+            '<div class="sharp border border-white/10 bg-white/5 p-4' + (plan.audienceWide ? ' sm:col-span-2 lg:col-span-1 xl:col-span-2' : '') + '">' + (plan.commission ? '<div class="text-xs uppercase tracking-[0.18em] text-zinc-400">收益抽成</div><div class="mt-2 text-3xl font-black text-sky-200">' + escapeHtml(plan.commission) + '</div><div class="mt-2 text-sm text-zinc-300">每日净利润</div>' : '<div class="text-xs uppercase tracking-[0.18em] text-zinc-400">适合人群</div><div class="mt-2 text-2xl font-black text-sky-200">' + escapeHtml(plan.audience) + '</div>') + '</div>' +
+            (plan.commission && plan.audience ? '<div class="sharp border border-white/10 bg-white/5 p-4"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">适合人群</div><div class="mt-2 text-xl font-black leading-8 text-sky-200">' + escapeHtml(plan.audience) + '</div></div>' : '') +
+            '<div class="sharp border border-white/10 bg-white/5 p-4 sm:col-span-2 lg:col-span-1 xl:col-span-2"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">合作方法</div><div class="mt-2 text-2xl font-black text-emerald-200">' + escapeHtml(plan.cycle) + '</div><div class="mt-2 text-sm text-zinc-300">' + escapeHtml(plan.note) + '</div></div>' +
+          '</div>' : '<div class="mt-5 sharp border border-white/10 bg-white/5 p-4 text-base font-semibold leading-8 text-emerald-100">' + escapeHtml(plan.note) + '</div>') +
+        '</article>'
+      ).join('');
       return board;
     }
 
