@@ -244,40 +244,25 @@
     function makePriceBoard() {
       const plans = [
         {
-          name: '初级档',
+          name: '',
           price: '288',
           tierClass: 'price-tier-basic',
           audience: '适合宝妈，上班族，时间不充裕，低成本做副业',
           audienceWide: true,
           cycle: '教会你撞车',
-          note: '不提供订单',
-        },
-        {
-          name: '中级档',
-          price: '2888',
-          tierClass: 'price-tier-middle',
-          commission: '20%',
-          audience: '适合时间充裕者，预算足够，低成本创业',
-          cycle: '长期教学 + 分成',
-          note: '5位老师在线教你，保你学会，提供订单',
-        },
-        {
-          name: '高级档',
-          price: '16888',
-          tierClass: 'price-tier-premium',
-          note: '派人过去帮你搭建线下工作室，教你做一手订单，提供时时更新的新方案',
+          note: '',
         },
       ];
       const board = document.createElement('div');
-      board.className = 'reveal mb-8 grid gap-4 lg:grid-cols-3';
+      board.className = 'reveal mb-8 grid max-w-5xl gap-4';
       board.innerHTML = plans.map(plan =>
-        '<article class="price-board sharp overflow-hidden px-5 py-5 sm:px-6 sm:py-6">' +
-          '<div class="price-tier ' + escapeAttr(plan.tierClass) + '">' + escapeHtml(plan.name) + '</div>' +
+        '<article class="price-board sharp overflow-hidden px-5 py-5 sm:px-8 sm:py-8">' +
+          (plan.name ? '<div class="price-tier ' + escapeAttr(plan.tierClass) + '">' + escapeHtml(plan.name) + '</div>' : '') +
           '<div class="mt-3 flex flex-wrap items-end gap-3"><span class="price-num font-black text-amber-200">' + escapeHtml(plan.price) + '</span><span class="pb-2 text-lg font-semibold text-white/90">元 / 人</span></div>' +
           (plan.cycle ? '<div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">' +
             '<div class="sharp border border-white/10 bg-white/5 p-4' + (plan.audienceWide ? ' sm:col-span-2 lg:col-span-1 xl:col-span-2' : '') + '">' + (plan.commission ? '<div class="text-xs uppercase tracking-[0.18em] text-zinc-400">收益抽成</div><div class="mt-2 text-3xl font-black text-sky-200">' + escapeHtml(plan.commission) + '</div><div class="mt-2 text-sm text-zinc-300">每日净利润</div>' : '<div class="text-xs uppercase tracking-[0.18em] text-zinc-400">适合人群</div><div class="mt-2 text-2xl font-black text-sky-200">' + escapeHtml(plan.audience) + '</div>') + '</div>' +
             (plan.commission && plan.audience ? '<div class="sharp border border-white/10 bg-white/5 p-4"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">适合人群</div><div class="mt-2 text-xl font-black leading-8 text-sky-200">' + escapeHtml(plan.audience) + '</div></div>' : '') +
-            '<div class="sharp border border-white/10 bg-white/5 p-4 sm:col-span-2 lg:col-span-1 xl:col-span-2"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">合作方法</div><div class="mt-2 text-2xl font-black text-emerald-200">' + escapeHtml(plan.cycle) + '</div><div class="mt-2 text-sm text-zinc-300">' + escapeHtml(plan.note) + '</div></div>' +
+            '<div class="sharp border border-white/10 bg-white/5 p-4 sm:col-span-2 lg:col-span-1 xl:col-span-2"><div class="text-xs uppercase tracking-[0.18em] text-zinc-400">合作方法</div><div class="mt-2 text-2xl font-black text-emerald-200">' + escapeHtml(plan.cycle) + '</div>' + (plan.note ? '<div class="mt-2 text-sm text-zinc-300">' + escapeHtml(plan.note) + '</div>' : '') + '</div>' +
           '</div>' : '<div class="mt-5 sharp border border-white/10 bg-white/5 p-4 text-base font-semibold leading-8 text-emerald-100">' + escapeHtml(plan.note) + '</div>') +
         '</article>'
       ).join('');
